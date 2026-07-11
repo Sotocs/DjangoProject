@@ -1,7 +1,12 @@
 from django.db import models
 
 # Create your models here.
-
+# Выполните следующие запросы:
+# Получите все категории.
+# Получите все продукты.
+# Найдите все продукты в определенной категории.
+# Обновите цену для определенного продукта.
+# Удалите продукт.
 
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="наименование")

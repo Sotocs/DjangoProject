@@ -10,7 +10,7 @@ from django.db import models
 
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="наименование")
-    discription = models.TextField(verbose_name="описание")
+    description = models.TextField(verbose_name="описание")
 
     class Meta:
         verbose_name = "категория"
@@ -19,7 +19,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name="наименование")
-    discription = models.TextField(verbose_name="описание")
+    description = models.TextField(verbose_name="описание")
     image = models.ImageField(
         upload_to="catalog/images", verbose_name="изображение", null=True, blank=True
     )

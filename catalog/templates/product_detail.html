@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block tytle %} Skystore {% endblock %}
+{% block content %}
+<div class="row">
+                    <div class="col-12">
+                        <div class="product-info-row">
+                            <span class="product-label">Категория:</span>
+                            <span>{{ category }}</span>
+                        </div>
+                        <div class="product-info-row">
+                            <span class="product-label">Цена:</span>
+                            <span class="fw-bold text-primary">{{ price }} ₽</span>
+                        </div>
+                        <div class="product-info-row">
+                            <span class="product-label">Описание:</span>
+                        </div>
+                        <p class="text-start">{{ description|truncatechars:100 }}</p>
+                    </div>
+                </div>
+
+                <!-- Кнопка возврата -->
+                <div class="mt-4 pt-3 border-top">
+                    <a href="{% url 'catalog:home' %}" class="text-decoration-none text-primary fw-bold">
+                        ← Вернуться на главную
+                    </a>
+                </div>
+{% endblock %}

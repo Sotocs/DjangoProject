@@ -8,6 +8,7 @@ from django.db import models
 # Обновите цену для определенного продукта.
 # Удалите продукт.
 
+
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="наименование")
     description = models.TextField(verbose_name="описание")
@@ -17,11 +18,12 @@ class Category(models.Model):
         verbose_name_plural = "категории"
         ordering = ["name"]
 
+
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name="наименование")
     description = models.TextField(verbose_name="описание")
     image = models.ImageField(
-        upload_to="catalog/images", verbose_name="изображение", null=True, blank=True
+        upload_to="products/", verbose_name="изображение", null=True, blank=True
     )
     category = models.ForeignKey(
         "Category", on_delete=models.CASCADE, verbose_name="категория"
@@ -41,6 +43,3 @@ class Product(models.Model):
         verbose_name = "продукт"
         verbose_name_plural = "продукты"
         ordering = ["created_at", "updated_at"]
-
-
-

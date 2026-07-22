@@ -13,6 +13,9 @@ class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="наименование")
     description = models.TextField(verbose_name="описание")
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = "категория"
         verbose_name_plural = "категории"

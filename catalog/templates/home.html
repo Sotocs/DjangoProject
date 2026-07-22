@@ -32,6 +32,9 @@
                                class="btn btn-lg btn-block btn-outline-primary">
                                 Подробнее
                             </a>
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                            {% endif %}
                         </div>
                     </div>
                 </div>

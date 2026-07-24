@@ -8,6 +8,7 @@ from catalog.views import ContactsView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("blog/", include("blog.urls", namespace="blog")),
     path("", include("catalog.urls", namespace="catalog")),
     path("contacts/", ContactsView.as_view(), name="contacts"),
 ]

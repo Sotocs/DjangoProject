@@ -4,11 +4,12 @@ from django.contrib import admin
 from django.urls import include, path
 
 import catalog
+from catalog.views import ContactsView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("catalog.urls", namespace="catalog")),
-    path("contacts/", catalog.views.contacts, name="contacts"),
+    path("contacts/", ContactsView.as_view(), name="contacts"),
 ]
 
 if settings.DEBUG:

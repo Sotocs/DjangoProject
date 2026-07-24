@@ -5,28 +5,28 @@
 <div class="row">
 
                     <div class="product-image-block col-md-6 mb-4 mb-md-0">
-                {% if image %}
-                <img src="{{ image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
                 {% endif %}
             </div>
 
                     <div class="col-12">
                         <div class="product-info-row">
                             <span class="product-name">Название:</span>
-                            <span>{{ name }}</span>
+                            <span>{{ product.name }}</span>
                         </div>
                         <div class="product-info-row">
                             <span class="product-label">Категория:</span>
-                            <span>{{ category }}</span>
+                            <span>{{ product.category }}</span>
                         </div>
                         <div class="product-info-row">
                             <span class="product-label">Цена:</span>
-                            <span class="fw-bold text-primary">{{ price }} ₽</span>
+                            <span class="fw-bold text-primary">{{ product.price }} ₽</span>
                         </div>
                         <div class="product-info-row">
                             <span class="product-label">Описание:</span>
                         </div>
-                        <p class="text-start">{{ description }}</p>
+                        <p class="text-start">{{ product.description }}</p>
                     </div>
                 </div>
 

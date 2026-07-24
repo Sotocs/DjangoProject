@@ -1,44 +1,14 @@
 {% extends 'base.html' %}
-
-{% block title %}Добавить товар — Skystore{% endblock %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Добавить новый товар</h2>
+  <h1>Добавить товар</h1>
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+  </form>
 
-        <!-- Поля формы -->
-        <div class="mb-3">
-            <label for="{{ form.name.id_for_label }}" class="form-label">Название</label>
-            {{ form.name }}
-        </div>
-
-        <div class="mb-3">
-            <label for="{{ form.category.id_for_label }}" class="form-label">Категория</label>
-            {{ form.category }}
-        </div>
-
-        <div class="mb-3">
-            <label for="{{ form.price.id_for_label }}" class="form-label">Цена</label>
-            {{ form.price }}
-        </div>
-
-        <div class="mb-3">
-            <label for="{{ form.image.id_for_label }}" class="form-label">Изображение</label>
-            {{ form.image }}
-            <small class="text-muted">Допустимы форматы JPG, PNG. Размер не более 5 МБ.</small>
-        </div>
-
-        <div class="mb-3">
-            <label for="{{ form.description.id_for_label }}" class="form-label">Описание</label>
-            {{ form.description }}
-        </div>
-
-        <!-- Кнопки -->
-        <button type="submit" class="btn btn-primary">Сохранить товар</button>
-        <a href="{% url 'catalog:home' %}" class="btn btn-secondary">Отмена</a>
-    </form>
-</div>
+  <a href="{% url 'catalog:home' %}">← Отмена</a>
 {% endblock %}

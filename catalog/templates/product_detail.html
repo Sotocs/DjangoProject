@@ -2,6 +2,7 @@
 
 {% block tytle %} Skystore {% endblock %}
 {% block content %}
+{% if user.is_authenticated %}
 <div class="row">
 
                     <div class="product-image-block col-md-6 mb-4 mb-md-0">
@@ -40,6 +41,13 @@
                     <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">
                         <i class="bi bi-trash"></i> Удалить
                     </a>
+                {% else %}
+                <h4>Для просмотра/добавления/изменения товаров авторизуйтесь</h4>
+                <div class="d-flex">
+                    <a href="{% url 'users:login' %}" class="btn btn-outline-primary">Войти</a>
+                    <a href="{% url 'users:register' %}" class="btn btn-primary">Регистрация</a>
+                </div>
+                {% endif %}
 
                 <!-- Кнопка возврата -->
                 <div class="mt-4 pt-3 border-top">

@@ -21,3 +21,33 @@ class CustomUserRegistrationForm(UserCreationForm):
 class CustomLoginForm(AuthenticationForm):
     # Переопределяем username на email
     username = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'phone_number', 'country', 'avatar']
+        widgets = {
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Email адрес',
+                'readonly': True,  # опционально: запретить менять email в профиле
+            }),
+            'phone_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Номер телефона',
+            }),
+            'country': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Страна',
+            }),
+            'avatar': forms.FileInput(attrs={
+                'class': 'form-control',
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Если хочешь разрешить менять email — убери строку ниже.
+        # Но помни: email уникальный, и при смене нужно проверять, не занят ли он.
+        self.fields['email'].required = True
+        self.fields['email'].widget.attrs['readonly'] = True

@@ -1,10 +1,13 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import FormView, UpdateView
 from django.contrib.auth import login
 from django.core.mail import send_mail
 from django.conf import settings
-from .forms import CustomUserRegistrationForm, CustomLoginForm
+from .forms import CustomUserRegistrationForm, CustomLoginForm, ProfileEditForm
+from .models import CustomUser
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -35,3 +38,13 @@ class LoginView(FormView):
         user = form.get_user()
         login(self.request, user)
         return super().form_valid(form)
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = CustomUser
+    form_class = ProfileEditForm
+    template_name = 'profile_edit.html'
+    success_url = reverse_lazy('catalog:home')  # или на страницу профиля /dashboard и т.п.
+
+    def get_object(self, queryset=None):
+        # Разрешаем редактировать только свой профиль
+        return self.request.user

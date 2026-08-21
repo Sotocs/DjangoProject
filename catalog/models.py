@@ -1,5 +1,7 @@
 from django.db import models
 
+from users.models import CustomUser
+
 # Create your models here.
 # Выполните следующие запросы:
 # Получите все категории.
@@ -23,6 +25,14 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    STATUS_DRAFT = "draft"
+    STATUS_PUBLISHED = "published"
+
+    STATUS_CHOICES = [
+        (STATUS_DRAFT, "Черновик"),
+        (STATUS_PUBLISHED, "Опубликован"),
+    ]
+
     name = models.CharField(max_length=100, verbose_name="наименование")
     description = models.TextField(verbose_name="описание")
     image = models.ImageField(
@@ -39,6 +49,22 @@ class Product(models.Model):
         auto_now=True, verbose_name="дата последнего изменения"
     )
 
+    owner = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="products",
+        verbose_name="владелец",
+        null=True,  # временно null=True, чтобы миграция прошла без запроса дефолта
+        blank=True,
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_DRAFT,
+        verbose_name="статус публикации",
+    )
+
     def __str__(self):
         return self.name
 
@@ -46,3 +72,6 @@ class Product(models.Model):
         verbose_name = "продукт"
         verbose_name_plural = "продукты"
         ordering = ["created_at", "updated_at"]
+        permissions = [
+            ("can_unpublish_product", "Может снимать продукт с публикации"),
+        ]

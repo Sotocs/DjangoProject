@@ -12,23 +12,21 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # 1. Удаляем все существующие записи
         deleted_count, _ = Post.objects.all().delete()
-        self.stdout.write(
-            self.style.SUCCESS(f"Удалено записей блога: {deleted_count}")
-        )
+        self.stdout.write(self.style.SUCCESS(f"Удалено записей блога: {deleted_count}"))
 
         # 2. Создаем тестового пользователя (если нет), чтобы у постов был автор
         # Если у тебя кастомная модель с email-автором, get_user_model() всё равно сработает корректно
         user, created = User.objects.get_or_create(
-            email='admin@example.com',
+            email="admin@example.com",
             defaults={
-                'first_name': 'Admin',
-                'last_name': 'User',
-                'is_staff': True,
-                'is_superuser': True
-            }
+                "first_name": "Admin",
+                "last_name": "User",
+                "is_staff": True,
+                "is_superuser": True,
+            },
         )
         if created:
-            user.set_password('password123')
+            user.set_password("password123")
             user.save()
             self.stdout.write("Создан тестовый пользователь admin@example.com")
 

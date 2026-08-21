@@ -11,7 +11,7 @@ urlpatterns = [
     path("blog/", include("blog.urls", namespace="blog")),
     path("", include("catalog.urls", namespace="catalog")),
     path("contacts/", ContactsView.as_view(), name="contacts"),
-    path('accounts/', include('users.urls')),
+    path("accounts/", include("users.urls")),
 ]
 
 if settings.DEBUG:

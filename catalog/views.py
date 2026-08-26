@@ -1,9 +1,10 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -13,7 +14,8 @@ from django.views.generic import (
     View,
 )
 
-from catalog.models import Product
+from django.core.cache import cache
+from catalog.models import Product, Category
 
 from .forms import ProductForm
 
@@ -31,6 +33,7 @@ class ContactsView(TemplateView):
     template_name = "contacts.html"
 
 
+@method_decorator(cache_page(60 * 15), name="dispatch")
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = "product_detail.html"  # важно: полный путь с app-папкой
@@ -71,22 +74,36 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
-    form_class = ProductForm
-    template_name = "product_form.html"
+    template_name = "product_form.html"  # шаблон формы редактирования
+    fields = [
+        "name",
+        "description",
+        "image",
+        "category",
+        "price",
+        "status",
+    ]  # добавь нужные поля
 
-    def get_success_url(self):
-        return reverse_lazy("catalog:product_detail", kwargs={"pk": self.object.pk})
+    def test_func(self):
+        product = self.get_object()
+        # Разрешаем редактировать только владельцу или суперпользователю
+        return self.request.user.is_superuser or product.owner == self.request.user
 
-    def dispatch(self, request, *args, **kwargs):
-        obj = self.get_object()
-        # Разрешаем только владельцу или суперпользователю
-        if not (request.user.is_superuser or obj.owner == request.user):
-            from django.core.exceptions import PermissionDenied
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        product = self.object
 
-            raise PermissionDenied("Вы не можете редактировать этот продукт")
-        return super().dispatch(request, *args, **kwargs)
+        # --- ИНВАЛИДАЦИЯ КЕША ---
+        if product.category_id:
+            cache_key = f"products_category_{product.category_id}_published"
+            cache.delete(cache_key)
+            # Опционально: можно вывести в лог, чтобы видеть, что кеш сброшен (удобно при отладке)
+            # print(f"Cache invalidated for category {product.category_id}: {cache_key}")
+        # -------------------------
+
+        return response
 
 
 class ProductDeleteView(DeleteView):
@@ -138,3 +155,35 @@ class UnpublishProductView(LoginRequiredMixin, View):
 
         messages.success(request, "Продукт снят с публикации.")
         return redirect("catalog:product_detail", pk=product.pk)
+
+
+def get_products_by_category(category_id, only_published=True):
+    qs = Product.objects.filter(category_id=category_id)
+    if only_published:
+        qs = qs.filter(status=Product.STATUS_PUBLISHED)
+    return qs
+
+
+class ProductsByCategoryView(ListView):
+    model = Product
+    template_name = "product_by_category.html"
+    context_object_name = "products"
+    paginate_by = 10
+
+    def get_queryset(self):
+        category_id = self.kwargs.get("category")
+        cache_key = f"products_category_{category_id}_published"
+        cached_qs = cache.get(cache_key)
+        if cached_qs is not None:
+            return cached_qs
+
+        qs = get_products_by_category(category_id, only_published=True)
+        cache.set(cache_key, qs, 60 * 5)  # 5 минут
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs.get("pk")
+        category = get_object_or_404(Category, pk=category_id)
+        context["category"] = category
+        return context

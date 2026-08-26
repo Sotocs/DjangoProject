@@ -2,22 +2,59 @@
 
 {% block tytle %} Skystore {% endblock %}
 {% block content %}
+
 <div class="row">
+
+                    <div class="product-image-block col-md-6 mb-4 mb-md-0">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% endif %}
+            </div>
+
                     <div class="col-12">
                         <div class="product-info-row">
+                            <span class="product-name">Название:</span>
+                            <span>{{ product.name }}</span>
+                        </div>
+                        <div class="product-info-row">
                             <span class="product-label">Категория:</span>
-                            <span>{{ category }}</span>
+                            <span>{{ product.category }}</span>
                         </div>
                         <div class="product-info-row">
                             <span class="product-label">Цена:</span>
-                            <span class="fw-bold text-primary">{{ price }} ₽</span>
+                            <span class="fw-bold text-primary">{{ product.price }} ₽</span>
                         </div>
                         <div class="product-info-row">
                             <span class="product-label">Описание:</span>
                         </div>
-                        <p class="text-start">{{ description|truncatechars:100 }}</p>
+                        <p class="text-start">{{ product.description }}</p>
                     </div>
                 </div>
+            <!-- Панель действий (кнопки) -->
+<div class="mt-4 pt-3 border-top">
+  {% if can_edit_or_delete %}
+    <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-warning me-2">
+      <i class="bi bi-pencil-square"></i> Изменить
+    </a>
+  {% endif %}
+
+  {% if can_unpublish %}
+    <form action="{% url 'catalog:product_unpublish' product.pk %}" method="post" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-warning btn-sm">
+        <i class="bi bi-eye-slash"></i> Снять с публикации
+      </button>
+    </form>
+  {% endif %}
+
+  {% if can_edit_or_delete %}
+    <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger btn-sm"
+       onclick="return confirm('Вы уверены, что хотите удалить этот продукт?');">
+      <i class="bi bi-trash"></i> Удалить
+    </a>
+  {% endif %}
+</div>
+
 
                 <!-- Кнопка возврата -->
                 <div class="mt-4 pt-3 border-top">

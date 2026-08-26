@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block tytle %} Skystore {% endblock %}
+{% block title %} Skystore {% endblock %}
 {% block content %}
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <h1 class="display-4">Skystore</h1>
@@ -28,10 +28,13 @@
                                 {{ product.description|truncatechars:100 }}
                             </p>
 
-                            <a href="{% url 'catalog:product_detail' pr_id=product.id %}"
+                            <a href="{% url 'catalog:product_detail' pk=product.id %}"
                                class="btn btn-lg btn-block btn-outline-primary">
                                 Подробнее
                             </a>
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="max-width: 300px;">
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -39,6 +42,11 @@
         </div>
     {% else %}
         <p class="text-center">Товаров пока нет.</p>
+    {% endif %}
+    {% if user.is_authenticated %}
+    <nav class="ms-2">
+        <a class="p-2 btn btn-outline-primary" href="/product/create">Добавить товары</a>
+    </nav>
     {% endif %}
 </div>
 {% endblock %}

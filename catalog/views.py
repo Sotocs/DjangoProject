@@ -13,7 +13,7 @@ from django.views.generic import (
     UpdateView,
     View,
 )
-
+from catalog.services import get_products_by_category
 from django.core.cache import cache
 from catalog.models import Product, Category
 
@@ -46,12 +46,12 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
 
         # Проверка: может ли пользователь редактировать/удалять (владелец или суперпользователь)
         can_edit_or_delete = user.is_authenticated and (
-            user.is_superuser or product.owner == user
+                user.is_superuser or product.owner == user
         )
 
         # Проверка: может ли пользователь снимать с публикации (суперпользователь или имеет право)
         can_unpublish = user.is_authenticated and (
-            user.is_superuser or user.has_perm("catalog.can_unpublish_product")
+                user.is_superuser or user.has_perm("catalog.can_unpublish_product")
         )
 
         context.update(
@@ -84,11 +84,10 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         "category",
         "price",
         "status",
-    ]  # добавь нужные поля
+    ]
 
     def test_func(self):
         product = self.get_object()
-        # Разрешаем редактировать только владельцу или суперпользователю
         return self.request.user.is_superuser or product.owner == self.request.user
 
     def form_valid(self, form):
@@ -97,10 +96,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
         # --- ИНВАЛИДАЦИЯ КЕША ---
         if product.category_id:
-            cache_key = f"products_category_{product.category_id}_published"
-            cache.delete(cache_key)
-            # Опционально: можно вывести в лог, чтобы видеть, что кеш сброшен (удобно при отладке)
-            # print(f"Cache invalidated for category {product.category_id}: {cache_key}")
+            cache.delete(f"category_{product.category_id}")
         # -------------------------
 
         return response
@@ -108,32 +104,27 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class ProductDeleteView(DeleteView):
     model = Product
-    success_url = reverse_lazy("catalog:home")
     template_name = "product_confirm_delete.html"
+    success_url = reverse_lazy("catalog:home")
 
-    class ProductDeleteView(DeleteView):
-        model = Product
-        template_name = "catalog/product_confirm_delete.html"
-        success_url = reverse_lazy("catalog:product_list")
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        user = request.user
 
-        def dispatch(self, request, *args, **kwargs):
-            obj = self.get_object()
-            user = request.user
-
-            can_delete = (
+        can_delete = (
                 user.is_superuser
                 or obj.owner == user
                 or user.has_perm(
-                    "catalog.can_unpublish_product"
-                )  # здесь используем то же кастомное право
-            )
+            "catalog.can_unpublish_product"
+        )
+        )
 
-            if not can_delete:
-                from django.core.exceptions import PermissionDenied
+        if not can_delete:
+            from django.core.exceptions import PermissionDenied
 
-                raise PermissionDenied("У вас нет прав на удаление этого продукта")
+            raise PermissionDenied("У вас нет прав на удаление этого продукта")
 
-            return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class UnpublishProductView(LoginRequiredMixin, View):
@@ -142,8 +133,8 @@ class UnpublishProductView(LoginRequiredMixin, View):
 
         # Проверка прав: суперпользователь ИЛИ право can_unpublish_product
         if not (
-            request.user.is_superuser
-            or request.user.has_perm("catalog.can_unpublish_product")
+                request.user.is_superuser
+                or request.user.has_perm("catalog.can_unpublish_product")
         ):
             messages.error(request, "У вас нет прав для снятия продукта с публикации.")
             # Важно: использовать catalog:product_detail из-за app_name
@@ -157,13 +148,6 @@ class UnpublishProductView(LoginRequiredMixin, View):
         return redirect("catalog:product_detail", pk=product.pk)
 
 
-def get_products_by_category(category_id, only_published=True):
-    qs = Product.objects.filter(category_id=category_id)
-    if only_published:
-        qs = qs.filter(status=Product.STATUS_PUBLISHED)
-    return qs
-
-
 class ProductsByCategoryView(ListView):
     model = Product
     template_name = "product_by_category.html"
@@ -171,19 +155,12 @@ class ProductsByCategoryView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        category_id = self.kwargs.get("category")
-        cache_key = f"products_category_{category_id}_published"
-        cached_qs = cache.get(cache_key)
-        if cached_qs is not None:
-            return cached_qs
-
-        qs = get_products_by_category(category_id, only_published=True)
-        cache.set(cache_key, qs, 60 * 5)  # 5 минут
-        return qs
+        return get_products_by_category(self.kwargs["pk"])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        category_id = self.kwargs.get("pk")
-        category = get_object_or_404(Category, pk=category_id)
-        context["category"] = category
+        context["category"] = get_object_or_404(
+            Category,
+            pk=self.kwargs["pk"],
+        )
         return context

@@ -1,8 +1,11 @@
 from django.core.management.base import BaseCommand
+
 from catalog.models import Category, Product
+
 
 class Command(BaseCommand):
     help = "Delete and add test data"
+
     def handle(self, *args, **options):
         deleted_products, _ = Product.objects.all().delete()
         deleted_categories, _ = Category.objects.all().delete()

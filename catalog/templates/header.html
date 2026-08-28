@@ -1,0 +1,41 @@
+<header>
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Skystore</h5>
+    <nav class="ms-5">
+        <a class="p-2 btn btn-outline-primary" href="/">Каталог</a>
+        <a class="p-2 btn btn-outline-primary" href="/blog">Блог</a>
+        <a class="p-2 btn btn-outline-primary" href="/contacts/">Контакты</a>
+    </nav>
+    <div class="ms-auto order-md-2 order-1">
+            {% if user.is_authenticated %}
+        <div class="d-flex align-items-center ms-3">
+    {% if user.avatar %}
+      <img src="{{ user.avatar.url }}"
+           alt="Аватар"
+           class="rounded-circle me-2"
+           style="width: 36px; height: 36px; object-fit: cover;">
+    {% else %}
+      <!-- Заглушка: круг с первой буквой email -->
+      <span class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2"
+            style="width: 36px; height: 36px; font-size: 14px; color: white;">
+        {{ user.email|first|upper }}
+      </span>
+    {% endif %}
+                <a href="{% url 'users:profile_edit' %}" class="btn btn-outline-primary">
+                Профиль
+                </a>
+                    <form action="{% url 'users:logout' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger">
+                        Выйти ({{ user.email|default:user.username }})
+                    </button>
+                </form>
+            {% else %}
+                <div class="d-flex gap-2">
+                    <a href="{% url 'users:login' %}" class="btn btn-outline-primary">Войти</a>
+                    <a href="{% url 'users:register' %}" class="btn btn-primary">Регистрация</a>
+                </div>
+            {% endif %}
+        </div>
+</div>
+</header>

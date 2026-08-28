@@ -1,104 +1,98 @@
 [
-  {
-    "model": "catalog.category",
-    "pk": 10,
-    "fields": {
-      "name": "Дом",
-      "discription": "Товары для дома и уюта"
-    }
-  },
-  {
-    "model": "catalog.category",
-    "pk": 9,
-    "fields": {
-      "name": "Книги",
-      "discription": "Художественная и техническая литература"
-    }
-  },
-  {
-    "model": "catalog.category",
-    "pk": 8,
-    "fields": {
-      "name": "Электроника",
-      "discription": "Гаджеты и техника"
-    }
-  },
-  {
-    "model": "catalog.product",
-    "pk": 5,
-    "fields": {
-      "name": "Наушники беспроводные",
-      "discription": "Комфортные наушники с шумоподавлением",
-      "image": "",
-      "category": 8,
-      "price": "12999.99",
-      "created_at": "2026-07-11T18:57:40.182Z",
-      "updated_at": "2026-07-11T18:57:40.182Z"
-    }
-  },
-  {
-    "model": "catalog.product",
-    "pk": 6,
-    "fields": {
-      "name": "Умная колонка",
-      "discription": "Колонка с голосовым помощником и Wi‑Fi",
-      "image": "",
-      "category": 8,
-      "price": "8499.00",
-      "created_at": "2026-07-11T18:57:40.182Z",
-      "updated_at": "2026-07-11T18:57:40.182Z"
-    }
-  },
-  {
-    "model": "catalog.product",
-    "pk": 7,
-    "fields": {
-      "name": "Книга «Изучаем Python»",
-      "discription": "Практическое руководство по Python",
-      "image": "",
-      "category": 9,
-      "price": "899.00",
-      "created_at": "2026-07-11T18:57:40.182Z",
-      "updated_at": "2026-07-11T18:57:40.182Z"
-    }
-  },
-  {
-    "model": "catalog.product",
-    "pk": 8,
-    "fields": {
-      "name": "Роман классика",
-      "discription": "Известное произведение мировой литературы",
-      "image": "",
-      "category": 9,
-      "price": "699.90",
-      "created_at": "2026-07-11T18:57:40.182Z",
-      "updated_at": "2026-07-11T18:57:40.182Z"
-    }
-  },
-  {
-    "model": "catalog.product",
-    "pk": 9,
-    "fields": {
-      "name": "Плед уютный",
-      "discription": "Мягкий плед, 150×200 см",
-      "image": "",
-      "category": 10,
-      "price": "2499.50",
-      "created_at": "2026-07-11T18:57:40.182Z",
-      "updated_at": "2026-07-11T18:57:40.182Z"
-    }
-  },
-  {
-    "model": "catalog.product",
-    "pk": 10,
-    "fields": {
-      "name": "Подушка декоративная",
-      "discription": "Декоративная подушка с вышивкой",
-      "image": "",
-      "category": 10,
-      "price": "999.00",
-      "created_at": "2026-07-11T18:57:40.182Z",
-      "updated_at": "2026-07-11T18:57:40.182Z"
-    }
-  }
+    {
+        "model": "catalog.category",
+        "pk": 10,
+        "fields": {"name": "Дом", "discription": "Товары для дома и уюта"},
+    },
+    {
+        "model": "catalog.category",
+        "pk": 9,
+        "fields": {
+            "name": "Книги",
+            "discription": "Художественная и техническая литература",
+        },
+    },
+    {
+        "model": "catalog.category",
+        "pk": 8,
+        "fields": {"name": "Электроника", "discription": "Гаджеты и техника"},
+    },
+    {
+        "model": "catalog.product",
+        "pk": 5,
+        "fields": {
+            "name": "Наушники беспроводные",
+            "discription": "Комфортные наушники с шумоподавлением",
+            "image": "",
+            "category": 8,
+            "price": "12999.99",
+            "created_at": "2026-07-11T18:57:40.182Z",
+            "updated_at": "2026-07-11T18:57:40.182Z",
+        },
+    },
+    {
+        "model": "catalog.product",
+        "pk": 6,
+        "fields": {
+            "name": "Умная колонка",
+            "discription": "Колонка с голосовым помощником и Wi‑Fi",
+            "image": "",
+            "category": 8,
+            "price": "8499.00",
+            "created_at": "2026-07-11T18:57:40.182Z",
+            "updated_at": "2026-07-11T18:57:40.182Z",
+        },
+    },
+    {
+        "model": "catalog.product",
+        "pk": 7,
+        "fields": {
+            "name": "Книга «Изучаем Python»",
+            "discription": "Практическое руководство по Python",
+            "image": "",
+            "category": 9,
+            "price": "899.00",
+            "created_at": "2026-07-11T18:57:40.182Z",
+            "updated_at": "2026-07-11T18:57:40.182Z",
+        },
+    },
+    {
+        "model": "catalog.product",
+        "pk": 8,
+        "fields": {
+            "name": "Роман классика",
+            "discription": "Известное произведение мировой литературы",
+            "image": "",
+            "category": 9,
+            "price": "699.90",
+            "created_at": "2026-07-11T18:57:40.182Z",
+            "updated_at": "2026-07-11T18:57:40.182Z",
+        },
+    },
+    {
+        "model": "catalog.product",
+        "pk": 9,
+        "fields": {
+            "name": "Плед уютный",
+            "discription": "Мягкий плед, 150×200 см",
+            "image": "",
+            "category": 10,
+            "price": "2499.50",
+            "created_at": "2026-07-11T18:57:40.182Z",
+            "updated_at": "2026-07-11T18:57:40.182Z",
+        },
+    },
+    {
+        "model": "catalog.product",
+        "pk": 10,
+        "fields": {
+            "name": "Подушка декоративная",
+            "discription": "Декоративная подушка с вышивкой",
+            "image": "",
+            "category": 10,
+            "price": "999.00",
+            "created_at": "2026-07-11T18:57:40.182Z",
+            "updated_at": "2026-07-11T18:57:40.182Z",
+        },
+    },
 ]
